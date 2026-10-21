@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>資三甲黃仔魚_大樂透自動選號與對獎系統</title>
+    <style>
+        /* 手寫設計感的按鈕風格 */
+        button {
+            padding: 8px 16px;       /* 讓按鈕變大顆、好點擊 */
+            font-size: 15px;         /* 字體大小 */
+            border: none;            /* 拿掉預設醜醜邊框 */
+            border-radius: 6px;      /* 加上圓角 */
+            cursor: pointer;         /* 滑鼠移上去變手型 */
+            margin-top: 5px;         
+            background-color: #3498db; /* 主要藍色 */
+            color: white;            
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 微陰影 */
+            transition: background-color 0.2s; /* 讓顏色變換更平滑 */
+        }
+
+        /* 滑鼠移上去變深 */
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* 重新開始按鈕：灰框風格，不搶戲 */
+        .btn-reset {
+            background-color: white;
+            color: #555;
+            border: 1px solid #ccc;
+            box-shadow: none;
+            margin-left: 10px; /* 與對獎按鈕隔開 */
+        }
+        .btn-reset:hover {
+            background-color: #eed3d3; /* 滑鼠移上去淡淡的紅色，提示清除 */
+            color: #c0392b;
+            border-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎰 資三甲黃仔魚_大樂透自動選號與對獎系統</h1>
+
+    <p>**教學重點：** 利用 id 屬性與 document.getElementById() 修改網頁內容</p>
+
+    <h3>1. 我的彩券號碼</h3>
+    <p id="my-numbers">請點擊下方按鈕進行選號</p>
+    <button id="btn-pick" onclick="generateMyNumbers()">🎲 自動選號</button>
+
+    <h3>2. 本期開獎號碼</h3>
+    <p id="lottery-numbers">等待開獎中...</p>
+    <button id="btn-draw" onclick="drawLottery()">🎉 開始開獎</button>
+
+    <h3>3. 對獎結果</h3>
+    <p id="result-area">等待對獎中...</p>
+    <!-- 原本的對獎按鈕 -->
+    <button id="btn-check" onclick="checkResults()">🔍 進行對獎</button>
+    
+    <!-- 重新開始按鈕 -->
+    <button id="btn-reset" class="btn-reset" onclick="resetSystem()">🔄 重新開始</button>
+
+    <script>
+        // 用來存號碼的箱子，每次按按鈕都會更新
+        let myNumArray = [];
+        let winNumArray = [];
+
+        // 寫一個簡單的公用功能：負責隨機抓6個 1~49 不重複的號碼
+        function getRandomNumbers() {
+            let arr = [];
+            while(arr.length < 6) {
+                let num = Math.floor(Math.random() * 49) + 1; // 隨機 1 ~ 49
+                if(!arr.includes(num)) { // 如果重複了就不放進去
+                    arr.push(num);
+                }
+            }
+            // 排序一下，讓號碼從小到大排好，比較美觀
+            return arr.sort((a, b) => a - b);
+        }
+
+        // 1. 自動選號（可以一直重按，每次都不同）
+        function generateMyNumbers() {
+            myNumArray = getRandomNumbers();
+            document.getElementById("my-numbers").innerText = "您的號碼：" + myNumArray.join(", ");
+        }
+
+        // 2. 開始開獎（可以一直重開，每次都不同）
+        function drawLottery() {
+            winNumArray = getRandomNumbers();
+            document.getElementById("lottery-numbers").innerText = "本期開獎：" + winNumArray.join(", ");
+        }
+
+        // 3. 進行對獎（會拿最新的號碼去比對）
+        function checkResults() {
+            // 防呆：如果還沒選號或開獎，提示一下
+            if(myNumArray.length === 0 || winNumArray.length === 0) {
+                document.getElementById("result-area").innerText = "⚠️ 請先點擊上面兩個按鈕產生號碼喔！";
+                return;
+            }
+
+            // 計算中了幾個號碼
+            let hitCount = 0;
+            for(let i = 0; i < myNumArray.length; i++) {
+                if(winNumArray.includes(myNumArray[i])) {
+                    hitCount++;
+                }
+            }
+
+            // 顯示真正的對獎結果
+            document.getElementById("result-area").innerText = "對獎結果：中了 " + hitCount + " 個號碼！" + (hitCount >= 3 ? " 🎉 太棒了！" : " 🥲 再接再厲！");
+        }
+
+        // 4. 重新開始：把資料清空，文字變回最原本的狀態
+        function resetSystem() {
+            myNumArray = [];
+            winNumArray = [];
+            document.getElementById("my-numbers").innerText = "請點擊下方按鈕進行選號";
+            document.getElementById("lottery-numbers").innerText = "等待開獎中...";
+            document.getElementById("result-area").innerText = "等待對獎中...";
+        }
+    </script>
+
+</body>
+</html>
